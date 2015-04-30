@@ -1,0 +1,18 @@
+######################################################################################
+# Archivo para configurar ventanas de mantenimiento los servidores 
+# que se listen a continuación no seran monitorizados ni mandaran 
+# alertas de indisponibilidad durante los periodos especificados
+#
+# Uso: 
+# Agregar una línea con IP|inicio de la ventana|fin de la ventana
+# donde la sintaxis para las fechas debe ser MM-DD-YYYY:HH:MM
+#
+# Ejemplo: 192.168.56.12|01-22-2015:10:00|01-22-2016:10:00
+#
+# Las lineas que empiecen con el caracter # no seran tomadas en cuenta
+#
+######################################################################################
+
+#10.66.151.247:windows.mantenimiento.com
+
+10.66.151.247|01-20-2015:10:00|01-22-2016:10:00
