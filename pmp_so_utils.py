@@ -16,6 +16,12 @@ def timestampdiff(timestamp1, timestamp2):
     delta = datetime.strptime(timestamp1,timestring) - datetime.strptime(timestamp2,timestring)
     return delta.seconds/60
 
+def validate(date_text):
+    try:
+        datetime.datetime.strptime(date_text, timestring)
+    except ValueError:
+        raise ValueError("Formato de fecha incorrecto, deberia ser " + timestring)
+
 def mensajeAlerta(hostname,ip,recurso,valor):
     if recurso == "DISP":
         return "Alerta! El servidor " + hostname + " no esta disponible."
@@ -26,7 +32,6 @@ def mensajeAlerta(hostname,ip,recurso,valor):
 
 #def alertaRecEnRango():
 
-#def
 
 def is_valid_hostname(hostname):
     if len(hostname) > 255:
