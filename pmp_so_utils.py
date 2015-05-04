@@ -32,7 +32,6 @@ def mensajeAlerta(hostname,ip,recurso,valor):
 
 #def alertaRecEnRango():
 
-#def
 
 def is_valid_hostname(hostname):
     if len(hostname) > 255:

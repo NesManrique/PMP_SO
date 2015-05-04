@@ -6,6 +6,7 @@ import ast
 import socket
 import re
 import pmp_so_utils
+from optparse import OptionParser
 
 check_fs = re.compile("/{1,2}[-_A-Za-z0-9]*(/[-_A-Za-z0-9]*)*")
 
@@ -17,15 +18,12 @@ def check_config_file(config_file, set_values=False):
     config.read(config_file)
 
     section_genopt = config.options('opciones')
-    section_opciones.sort()
+    section_genopt.sort()
 
     section_servers = config.options('servidores')
     section_servers.sort()
 
-    section_mantenimiento = config.options('mantenimiento')
-    section_mantenimiento.sort()
-
-    print "Verificando archivo de cofiguracion " + config_file
+    print "\nVerificando archivo de cofiguracion " + config_file
 
     for server in section_servers:
         try:
@@ -102,35 +100,6 @@ def check_config_file(config_file, set_values=False):
             print "\tError de sintaxis en la definicion del " + server + "."
             errors = True
 
-    for ventana in section_mantenimiento:
-        aux_dict = ast.literal_eval(config.get('mantenimiento', ventana))
-
-        for k, v in aux_dict.iteritems():
-            if k == 'ip':
-               
-                if type(v) is not list:
-                    print "\tError de sintaxis en las ip de la " + ventana + "."
-                    errors = True
-                    continue
-
-                for ip in aux_dict['ip']:
-                    try:
-                        socket.inet_aton(v)
-                    except socket.error as err:
-                        print "\tLa ip '" + ip + "' de la " + ventana + " no es valida."
-                        errors = True
-
-             elif k == 'inicio' or k == 'fin':
-                try:
-                    pmp_so_utils.validate(v)
-                except ValueError as err:
-                    errors = True
-                    print err
-
-             else
-                print "\tOpcion '" + k + "' no valida en la definicion del " + server + "."
-                errors = True
-    
     if errors:
         print "Verifique el archivo de configuracion.\n"
         exit(1)
@@ -144,18 +113,36 @@ def check_config_file(config_file, set_values=False):
 def get_attr(server_ip, attr):
     return servidores[server_ip][attr]
 
-config_file = sys.argv[1]
+parser = OptionParser(usage="Usage: %prog [options] <configuration_file>")
+
+parser.add_option("-c","--check-config", action="store_true", 
+                    dest="check_config", default=False, 
+                    help="performs a verification of the configuration file")
+
+(options, args) = parser.parse_args()
+
+if len(args) != 1:
+    parser.error("Missing configuration file\n")
+
+config_file = args[0]
 
 if not os.path.isfile(config_file) and not os.path.exists(config_file):
-    print "El archivo de configuracion no existe o es invalido.\n"
-    exit(1)
+    parser.error("Configuration file isn't valid or doesn't exists.\n")
 
-servidores = check_config_file(config_file,True)
+servidores = check_config_file(config_file,options.check_config)
+recursos_serv = {}
 
-print get_attr('10.66.151.247','hostname')
-print get_attr('10.66.151.247','cpu_usr')
-print get_attr('10.66.151.247','cpu_sys')
-print get_attr('10.66.151.247','mem_swap')
-print get_attr('10.66.151.247','mem_ram')
-print get_attr('10.66.151.247','red')
-print get_attr('10.66.151.247','filesys')
+#for servidor in servidores.keys():
+    #
+    #recursos_serv[servidor] = recolectar_recursos(servidor)
+
+#reporte = generar_reporte(servidores, recursos_serv)
+#enviar_reporte(reporte)
+
+#print get_attr('10.66.151.247','hostname')
+#print get_attr('10.66.151.247','cpu_usr')
+#print get_attr('10.66.151.247','cpu_sys')
+#print get_attr('10.66.151.247','mem_swap')
+#print get_attr('10.66.151.247','mem_ram')
+#print get_attr('10.66.151.247','red')
+#print get_attr('10.66.151.247','filesys')
