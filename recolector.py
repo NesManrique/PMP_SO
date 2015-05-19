@@ -2,10 +2,11 @@
 
 import sys
 import socket
-from optparse import OptionParser
 import paramiko
 import pmp_so_utils
 import os
+from optparse import OptionParser
+from itertools import izip
 
 parser = OptionParser(usage = "Usage: %prog <server IP> <server Hostname> <username>")
 
@@ -34,10 +35,59 @@ privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')
 sshkey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
 ssh.connect(server_ip, username = ssh_username,  pkey = sshkey)
 
-stdin, stdout, stderr = ssh.exec_command("ls")
+stdin, stdout, stderr = ssh.exec_command("uname")
 
-for line in stdout:
-    print '... ' + line.strip('\n')
+plataforma = stdout.read().rstrip()
 
+server_values = {'date': pmp_so_utils.timestamp(), 'ip' : server_ip , 'hostname' : server_hostname}
+
+if plataforma == "AIX":
+    print "AIX servers not yet supported"
+    exit(1)
+elif plataforma == "HP-UX":
+    print "HP-UX servers not yet supported"
+    exit(1)
+elif plataforma == "SunOS":
+    print "SunOS servers not yet supported"
+    exit(1)
+elif plataforma == "Linux":
+
+    #Datos CPU
+    stdin, stdout, stderr = ssh.exec_command("sar -u 1 2|grep Avera|awk '{print $3\":\"$5\":\"$6}'")
+    cpu = stdout.read().rstrip().split(":")
+    server_values['cpu_usr'] = "{0:.2f}%".format(float(cpu[0]) + 0.5)
+    server_values['cpu_sys'] = "{0:.2f}%".format(float(cpu[1]) + 0.5)
+    server_values['cpu_wio'] = "{0:.2f}%".format(float(cpu[2]) + 0.5)
+
+    #Datos Filesystems
+    stdin, stdout, stderr = ssh.exec_command("df -H| awk 'match($0,/[0-9]+% /) { print substr($0,RSTART,RLENGTH) $NF  } '|awk '{print $1\"_\"$2 \"_\"$3}' | paste -sd \"\" -")
+    fs = stdout.read().rstrip().split("_")[:-1]
+    fs = iter(fs)
+    fs = izip(fs,fs)
+    for x,y in fs:
+        server_values[y] = x
+
+    #Datos Memoria RAM
+    stdin, stdout, stderr = ssh.exec_command("free |grep Mem:|awk '{print $2}'")
+    total_ram = stdout.read().rstrip()
+
+    stdin, stdout, stderr = ssh.exec_command("free |grep cache:|awk '{print $3}'")
+    used_ram = stdout.read().rstrip()
+
+    server_values['ram'] = "{0:.2f}%".format(100 * float(used_ram)/float(total_ram))
+
+    #Datos Memoria SWAP
+    stdin, stdout, stderr = ssh.exec_command("free|grep Swap:|awk '{print $2\":\"$3}'|sed \"s/%//g\"")
+    swap = stdout.read().rstrip().split(":") 
+    total_swap = swap[0]
+    used_swap = swap[1]
+
+    server_values['swap'] = "{0:.2f}%".format(100 * float(used_swap)/float(total_swap))
+else:
+    print "Platform "+ plataforma +" not supported."
+    ssh.close()
+    exit(1)
+    
 ssh.close()
-
+print server_values
+exit(0)
