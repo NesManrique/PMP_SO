@@ -33,6 +33,7 @@ ssh = paramiko.SSHClient()
 ssh.load_system_host_keys()
 privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')
 sshkey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh.connect(server_ip, username = ssh_username,  pkey = sshkey)
 
 stdin, stdout, stderr = ssh.exec_command("uname")

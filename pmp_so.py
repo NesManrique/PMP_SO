@@ -113,36 +113,41 @@ def check_config_file(config_file, set_values=False):
 def get_attr(server_ip, attr):
     return servidores[server_ip][attr]
 
-parser = OptionParser(usage="Usage: %prog [options] <configuration_file>")
+def main():
+    parser = OptionParser(usage="Usage: %prog [options] <configuration_file>")
 
-parser.add_option("-c","--check-config", action="store_true", 
-                    dest="check_config", default=False, 
-                    help="performs a verification of the configuration file")
+    parser.add_option("-c","--check-config", action="store_true", 
+                        dest="check_config", default=False, 
+                        help="performs a verification of the configuration file and exits.")
 
-(options, args) = parser.parse_args()
+    (options, args) = parser.parse_args()
 
-if len(args) != 1:
-    parser.error("Missing configuration file\n")
+    if len(args) != 1:
+        parser.error("Missing configuration file\n")
 
-config_file = args[0]
+    config_file = args[0]
 
-if not os.path.isfile(config_file) and not os.path.exists(config_file):
-    parser.error("Configuration file isn't valid or doesn't exists.\n")
+    if not os.path.isfile(config_file) and not os.path.exists(config_file):
+        parser.error("Configuration file isn't valid or doesn't exists.\n")
 
-servidores = check_config_file(config_file,options.check_config)
-recursos_serv = {}
+    servidores = check_config_file(config_file,options.check_config)
+    recursos_serv = {}
 
-#for servidor in servidores.keys():
-    #
-    #recursos_serv[servidor] = recolectar_recursos(servidor)
+    #for servidor in servidores.keys():
+        #
+        #recursos_serv[servidor] = recolectar_recursos(servidor)
 
-#reporte = generar_reporte(servidores, recursos_serv)
-#enviar_reporte(reporte)
+    #reporte = generar_reporte(servidores, recursos_serv)
+    #enviar_reporte(reporte)
 
-#print get_attr('10.66.151.247','hostname')
-#print get_attr('10.66.151.247','cpu_usr')
-#print get_attr('10.66.151.247','cpu_sys')
-#print get_attr('10.66.151.247','mem_swap')
-#print get_attr('10.66.151.247','mem_ram')
-#print get_attr('10.66.151.247','red')
-#print get_attr('10.66.151.247','filesys')
+    #print get_attr('10.66.151.247','hostname')
+    #print get_attr('10.66.151.247','cpu_usr')
+    #print get_attr('10.66.151.247','cpu_sys')
+    #print get_attr('10.66.151.247','mem_swap')
+    #print get_attr('10.66.151.247','mem_ram')
+    #print get_attr('10.66.151.247','red')
+    #print get_attr('10.66.151.247','filesys')
+
+if __name__=='__main__':
+    main()
+
