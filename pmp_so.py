@@ -6,6 +6,7 @@ import ast
 import socket
 import re
 import pmp_so_utils
+import argparse
 from optparse import OptionParser
 
 check_fs = re.compile("/{1,2}[-_A-Za-z0-9]*(/[-_A-Za-z0-9]*)*")
@@ -114,13 +115,13 @@ def get_attr(server_ip, attr):
     return servidores[server_ip][attr]
 
 def main():
-    parser = OptionParser(usage="Usage: %prog [options] <configuration_file>")
+    parser = argparse.ArgumentParser(description="Minimal resource monitoring tool for Operating Systems.
+                Sends a mail with the current state of the resources of the servers specified in pmp.conf.")
 
-    parser.add_option("-c","--check-config", action="store_true", 
-                        dest="check_config", default=False, 
-                        help="performs a verification of the configuration file and exits.")
+    parser.add_argument('-c', '--check-config', default="store_true", help="Performs a verification of the configuration file and exists")
+    parser.add_argument('config_file')
 
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
     if len(args) != 1:
         parser.error("Missing configuration file\n")
