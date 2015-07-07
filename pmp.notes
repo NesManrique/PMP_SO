@@ -1,0 +1,5 @@
+Para pycrypto instalar a mano gmp con binarios en https://gmplib.org/#DOWNLOAD y usar pip para instalar de nuevo pycrypto haciendo
+
+pip install -I --global-option=build_ext --global-option="-I/usr/local/include" pycrypto
+
+
