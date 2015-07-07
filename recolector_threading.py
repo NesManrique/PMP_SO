@@ -6,10 +6,13 @@ import paramiko
 import pmp_so_utils
 import os
 from optparse import OptionParser
-from itertools import izip
+try:
+    from itertools import izip as zip
+except ImportError: # will be 3.x series
+    pass
 
 def signal_cleanup(_signum, _frame):
-    print '\nCLEANUP\n'
+    print('\nCLEANUP\n')
     sys.exit(0)
 
 def workon(server_hostname,server_ip,ssh_username):
@@ -28,13 +31,13 @@ def workon(server_hostname,server_ip,ssh_username):
     server_values = {'date': pmp_so_utils.timestamp(), 'ip' : server_ip , 'hostname' : server_hostname}
 
     if plataforma == "AIX":
-        print "AIX servers not yet supported"
+        print("AIX servers not yet supported")
         exit(0)
     elif plataforma == "HP-UX":
-        print "HP-UX servers not yet supported"
+        print("HP-UX servers not yet supported")
         exit(0)
     elif plataforma == "SunOS":
-        print "SunOS servers not yet supported"
+        print("SunOS servers not yet supported")
         exit(0)
     elif plataforma == "Linux":
 
@@ -70,31 +73,28 @@ def workon(server_hostname,server_ip,ssh_username):
 
         server_values['swap'] = "{0:.2f}%".format(100 * float(used_swap)/float(total_swap))
     else:
-        print "Platform "+ plataforma +" not supported."
+        print("Platform "+ plataforma +" not supported.")
         ssh.close()
         exit(0)
 
 def main():
 
-    parser = OptionParser(usage = "Usage: %prog <server IP> <server Hostname> <username>")
+    parser = argparse.ArgumentParser(description="Recolects resource data from a server and returns a dict with the values.")
 
-    (options, args) = parser.parse_args()
+    parser.add_argument('ssh_username', help='Username for the connection')
+    parser.add_argument('server_hostname', help='Server hostname')
+    parser.add_argument('server_ip', help='Server IP')
 
-    if len(args) != 3:
-        parser.error("Incorrect number of arguments\n")
-
-    server_ip = args[0]
-    server_hostname = args[1]
-    ssh_username = args[2]
+    args = parser.parse_args()
 
     try:
         socket.inet_aton(server_ip)
     except socket.error as err:
-        print "\tServer IP is not valid"
+        print("\tServer IP is not valid")
         exit(1)
 
     if not pmp_so_utils.is_valid_hostname(server_hostname):
-        print "Hostname is not valid"
+        print("Hostname is not valid")
         exit(1)
     
     # exit after a few seconds (see WARNINGs)
@@ -104,7 +104,7 @@ def main():
     threads = [
         threading.Thread(
             target=workon, 
-            args=(server_hostname,server_ip,ssh_username),
+            args=(args.server_hostname,args.server_ip,args.ssh_username),
             name=server_hostname
             )
     ]

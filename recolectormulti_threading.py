@@ -6,11 +6,14 @@ import paramiko
 import pmp_so_utils
 import os
 import pwd
-from optparse import OptionParser
-from itertools import izip
+import argparse
+try:
+    from itertools import izip as zip
+except ImportError: # will be 3.x series
+    pass
 
 def signal_cleanup(_signum, _frame):
-    print '\nCLEANUP\n'
+    print('\nCLEANUP\n')
     sys.exit(0)
 
 def workon(server):
@@ -18,7 +21,6 @@ def workon(server):
     ssh = paramiko.SSHClient()
     ssh.load_system_host_keys()
     privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')
-    print privatekeyfile
     sshkey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_username = pwd.getpwuid(os.getuid()).pw_name
@@ -31,13 +33,13 @@ def workon(server):
     server_values = {'date': pmp_so_utils.timestamp(), 'ip' : server_ip , 'hostname' : server_hostname}
 
     if plataforma == "AIX":
-        print "AIX servers not yet supported"
+        print("AIX servers not yet supported")
         exit(0)
     elif plataforma == "HP-UX":
-        print "HP-UX servers not yet supported"
+        print("HP-UX servers not yet supported")
         exit(0)
     elif plataforma == "SunOS":
-        print "SunOS servers not yet supported"
+        print("SunOS servers not yet supported")
         exit(0)
     elif plataforma == "Linux":
 
@@ -73,29 +75,30 @@ def workon(server):
 
         server_values['swap'] = "{0:.2f}%".format(100 * float(used_swap)/float(total_swap))
     else:
-        print "Platform "+ plataforma +" not supported."
+        print("Platform "+ plataforma +" not supported.")
         ssh.close()
         exit(0)
 
 def main():
 
-    parser = OptionParser(usage = "Usage: %prog <server_ip1, server_ip2, ...>")
+    parser = argparse.ArgumentParser(description="Recolects resource data from a list of servers and returns a dict with the values.")
+    parser.add_argument('servers', nargs='+', help='List of servers.')
 
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
-    if len(args) < 1:
-        parser.error("Incorrect number of arguments\n")
+    print(args)
+    print(args.servers)
 
-    server_ip = args[0]
+    exit(0)
 
     try:
         socket.inet_aton(server_ip)
     except socket.error as err:
-        print "\tServer IP is not valid"
+        print("\tServer IP is not valid")
         exit(1)
 
     if not pmp_so_utils.is_valid_hostname(server_hostname):
-        print "Hostname is not valid"
+        print("Hostname is not valid")
         exit(1)
     
     # exit after a few seconds (see WARNINGs)
