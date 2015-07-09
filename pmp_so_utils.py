@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import re
+import socket
 from datetime import datetime, date, time, timedelta
 from time import localtime, strftime
 
@@ -41,3 +42,11 @@ def is_valid_hostname(hostname):
         hostname = hostname[:-1] # strip exactly one dot from the right, if present
     allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
     return all(allowed.match(x) for x in hostname.split("."))
+
+def is_valid_ip(server_ip):
+    try:
+        socket.inet_aton(server_ip)
+        return True
+    except socket.error as err:
+        return False
+
