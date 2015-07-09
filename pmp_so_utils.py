@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 import sys
 import re
+import socket
 from datetime import datetime, date, time, timedelta
-from time import localtime
+from time import localtime, strftime
 
 timestring="%Y-%b-%d:%H:%M:%S"
 
 def timestamp():
-    return datetime.strftime(timestring,localtime())
+    return strftime(timestring,localtime())
 
 def timestampdiff(timestamp1, timestamp2):
     if datetime.strptime(timestamp2,timestring) > datetime.strptime(timestamp1,timestring):
         delta = datetime.strptime(timestamp2,timestring) - datetime.strptime(timestamp1,timestring)
-        return delta.seconds/60
+        return delta.seconds
+
     delta = datetime.strptime(timestamp1,timestring) - datetime.strptime(timestamp2,timestring)
-    return delta.seconds/60
+    return delta.seconds
 
 def validate(date_text):
     try:
@@ -40,3 +42,11 @@ def is_valid_hostname(hostname):
         hostname = hostname[:-1] # strip exactly one dot from the right, if present
     allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
     return all(allowed.match(x) for x in hostname.split("."))
+
+def is_valid_ip(server_ip):
+    try:
+        socket.inet_aton(server_ip)
+        return True
+    except socket.error as err:
+        return False
+
