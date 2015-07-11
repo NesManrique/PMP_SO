@@ -5,7 +5,8 @@ import paramiko
 import pmp_so_utils
 import os
 import pwd
-import argparse
+import json
+from argparse import ArgumentParser
 try:
     from itertools import izip as zip
 except ImportError: # will be 3.x series
@@ -51,12 +52,18 @@ def workon(server):
         exit(0)
     elif plataforma == "Linux":
 
+        #VERSION
+        stdin, stdout, stderr = ssh.exec_command("uname -sr")
+        verso = stdout.read().rstrip().decode("utf-8")
+        server_values['verso'] = verso
+
         #CPU DATA
-        stdin, stdout, stderr = ssh.exec_command("sar -u 1 2|grep Avera|awk '{print $3\":\"$5\":\"$6}'")
+        stdin, stdout, stderr = ssh.exec_command("sar -u 1 2|grep Avera|awk '{print $3\":\"$5\":\"$6\":\"$8}'")
         cpu = stdout.read().rstrip().decode("utf-8").split(":")
         server_values['cpu_usr'] = "{0:.2f}%".format(float(cpu[0]) + 0.5)
         server_values['cpu_sys'] = "{0:.2f}%".format(float(cpu[1]) + 0.5)
         server_values['cpu_wio'] = "{0:.2f}%".format(float(cpu[2]) + 0.5)
+        server_values['cpu_idle'] = "{0:.2f}%".format(float(cpu[3]) + 0.5)
 
         #Filesystem DATA
         stdin, stdout, stderr = ssh.exec_command("df -H| awk 'match($0,/[0-9]+% /) { print substr($0,RSTART,RLENGTH) $NF  } '|awk '{print $1\"_\"$2 \"_\"$3}' | paste -sd \"\" -")
@@ -73,7 +80,8 @@ def workon(server):
         stdin, stdout, stderr = ssh.exec_command("free |grep cache:|awk '{print $3}'")
         used_ram = stdout.read().rstrip().decode("utf-8")
 
-        server_values['ram'] = "{0:.2f}%".format(100 * float(used_ram)/float(total_ram))
+        server_values['ram_used'] = "{0:.2f}%".format(100 * float(used_ram)/float(total_ram))
+        server_values['ram_free'] = "{0:.2f}%".format(100-(100 * float(used_ram)/float(total_ram)))
 
         #SWAP DATA
         stdin, stdout, stderr = ssh.exec_command("free|grep Swap:|awk '{print $2\":\"$3}'|sed \"s/%//g\"")
@@ -82,7 +90,7 @@ def workon(server):
         used_swap = swap[1]
 
         server_values['swap'] = "{0:.2f}%".format(100 * float(used_swap)/float(total_swap))
-        print(server_values)
+        print(json.dumps(server_values))
     else:
         print("Platform "+ plataforma +" not supported.")
         ssh.close()
@@ -90,7 +98,7 @@ def workon(server):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Recolects resource data from a list of servers and returns a dict with the values.")
+    parser = ArgumentParser(description="Recolects resource data from a list of servers and returns json with the values.")
     parser.add_argument('servers', nargs='+', help='List of servers IPs or Hostnames')
 
     args = parser.parse_args()
