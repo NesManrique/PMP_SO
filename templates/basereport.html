@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" href="../bootstrap/report.css" />
+        <title>Reporte PMP SO </title>
+    {% endblock %}
+</head>
+<body>
+    <div class="container theme-showcase" id="content">
+    
+        {% block content %}
+        {% endblock %}
+    
+        <footer class="footer">
+            {% block footer %}
+            &copy; Copyright 2015 by <a href="http://seti.com.co/">Seti</a>.
+            {% endblock %}
+        </footer>
+    </div>
+    
+</body>
+</html>

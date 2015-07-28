@@ -1,0 +1,100 @@
+{% extends "basereport.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Resumen</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Servidor1</a></li>
+            <li><a href="#servidor2">Servidor2</a></li>
+            <li><a href="#servidor3">Servidor3</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+    <div class="jumbotron">
+        <h1>Reporte PMP para Sistemas Operativos</h1>
+        <p>21 de Septiembre de 2015</p>
+    </div>
+    
+    <div class="page-header">
+    <h1>Resumen</h1>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Hostname</th>
+            <th>Version SO</th>
+            <th>Direccion IP</th>
+            <th>Uso de CPU</th>
+            <th>Uso de RAM</th>
+            <th>Uso de SWAP</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>serora</td>
+            <td>Linux</td>
+            <td>10.66.151.22</td>
+            <td>usr:10%, sys:1%, wio:0%, idle:89%</td>
+            <td>Total: 130GB Usada: 30%</td>
+            <td>Total: 16GB Usada: 0%</td>
+        </tr>
+        <tr>
+            <td>serapli</td>
+            <td>Linux</td>
+            <td>10.66.151.23</td>
+            <td>usr:10%, sys:1%, wio:0%, idle:89%</td>
+            <td>Total: 130GB Usada: 30%</td>
+            <td>Total: 16GB Usada: 0%</td>
+        </tr>
+        <tr>
+            <td>serpru</td>
+            <td>Linux</td>
+            <td>10.66.151.24</td>
+            <td>usr:10%, sys:1%, wio:0%, idle:89%</td>
+            <td>Total: 130GB Usada: 30%</td>
+            <td>Total: 16GB Usada: 0%</td>
+        </tr>
+        </tbody>
+    </table>
+ 
+    <h1 class="page-header">Servidor 1</h1>
+
+    <div class="row placeholders">
+        <div class="col-xs-8 col-sm-4 placeholder">
+          <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+          <h4>CPU</h4>
+          <span class="text-muted">Something else</span>
+        </div>
+        <div class="col-xs-8 col-sm-4 placeholder">
+          <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+          <h4>RAM</h4>
+          <span class="text-muted">Something else</span>
+        </div>
+        <div class="col-xs-8 col-sm-4 placeholder">
+          <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+          <h4>SWAP</h4>
+          <span class="text-muted">Something else</span>
+        </div>
+    </div>
+
+{% endblock %}
+

@@ -23,7 +23,7 @@ args = parser.parse_args()
 
 #letters = [ chr(x) for x in range(ord('A'),ord('Z'))]
 
-for host,row in zip(args.servers,range(1,len(args.servers)+1)):
+for host,row in zip(args.servers,range(1,len(args)+1)):
     print(host['hostname'])
     wsheet['A'+str(row)] = host['hostname']
     wsheet['B'+str(row)] = host['verso']
@@ -31,6 +31,6 @@ for host,row in zip(args.servers,range(1,len(args.servers)+1)):
     #wsheet['D'+str(row)] = host['Filesystems']
     #wsheet['E'+str(row)] = host['cpu_usr']
     #wsheet['F'+str(row)] = host['hostname']
-    wsheet['G'+str(row)] = "%usu="+host['cpu_usr']+"  %sys="+host['cpu_sys']+"  %wio="+host['cpu_wio']+"%idle= "+host['cpu_idle']
-    wsheet['H'+str(row)] = "Usada= "+host['ram_used']+"   Libre= "+host['ram_free']+"  Swap usada=  "+host['swap']
-    #wsheet['I'+str(row)] = host['']
+    wsheet['G'+str(row)] = host['']
+    wsheet['H'+str(row)] = host['hostname']
+    wsheet['I'+str(row)] = host['hostname']
