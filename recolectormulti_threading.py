@@ -30,11 +30,15 @@ def workon(server):
         server_values = {'date': pmp_so_utils.timestamp(), 'ip' : server}
         stdin, stdout, stderr = ssh.exec_command("hostname")
         hostname = stdout.read().rstrip().decode("utf-8")
+        shortname = hostname.split(".")[0]
         server_values['hostname'] = hostname
+        server_values['shortname'] = shortname
     elif pmp_so_utils.is_valid_hostname(server):
         server_values = {'date': pmp_so_utils.timestamp(), 'hostname' : server}
+        shortname = server.split(".")[0]
         stdin, stdout, stderr = ssh.exec_command("grep "+server+" /etc/hosts|cut -f1 -d' '")
         ip = stdout.read().rstrip().decode("utf-8")
+        server_values['shortname'] = shortname
         server_values['ip'] = ip
 
     stdin, stdout, stderr = ssh.exec_command("uname")
@@ -80,6 +84,7 @@ def workon(server):
         stdin, stdout, stderr = ssh.exec_command("free |grep cache:|awk '{print $3}'")
         used_ram = stdout.read().rstrip().decode("utf-8")
 
+        server_values['ram_total'] = total_ram
         server_values['ram_used'] = "{0:.2f}%".format(100 * float(used_ram)/float(total_ram))
         server_values['ram_free'] = "{0:.2f}%".format(100-(100 * float(used_ram)/float(total_ram)))
 
@@ -89,8 +94,10 @@ def workon(server):
         total_swap = swap[0]
         used_swap = swap[1]
 
-        server_values['swap'] = "{0:.2f}%".format(100 * float(used_swap)/float(total_swap))
+        server_values['swap_total'] = total_swap
+        server_values['swap_used'] = "{0:.2f}%".format(100 * float(used_swap)/float(total_swap))
         print(json.dumps(server_values))
+
     else:
         print("Platform "+ plataforma +" not supported.")
         ssh.close()
