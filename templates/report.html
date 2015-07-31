@@ -1,12 +1,9 @@
 {% extends "basereport.html" %}
-{% block title %}Index{% endblock %}
 {% block head %}
     {{ super() }}
-    <style type="text/css">
-        .important { color: #336699; }
-    </style>
 {% endblock %}
 {% block content %}
+
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -19,78 +16,47 @@
           </button>
           <a class="navbar-brand" href="#resumen">Resumen</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            {% for servidor in servidores %}
-                <li><a href="#{{ servidor['hostname'] }}">{{ servidor['shortname'] }}</a></li>
-            {% endfor %}
-          </ul>
-        </div><!--/.nav-collapse -->
       </div>
     </nav>
+    <!-- End Fixed navbar -->
     
     <div class="jumbotron">
         <h1>Reporte PMP para Sistemas Operativos</h1>
-        <p>Cliente</p>
-        <p>Fecha/Periodo</p>
+        <h2>Cliente</h2>
+        {% block fecha %}
+            <p>Fecha</p>
+        {% endblock %}
     </div>
     
-    <div class="page-header">
-    <h1><a name="resumen" class="localanchor">Resumen</a></h1>
-    </div>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Hostname</th>
-            <th>Version SO</th>
-            <th>Direccion IP</th>
-            <th>Uso de CPU</th>
-            <th>Uso de RAM</th>
-            <th>Uso de SWAP</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for servidor in servidores %}
+    {% block resumen %}
+        <div class="page-header">
+        <h1><a name="resumen" class="localanchor">Resumen</a></h1>
+        </div>
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <td>{{ servidor['hostname'] }}</td>
-                <td>{{ servidor['verso'] }}</td>
-                <td>{{ servidor['ip'] }}</td>
-                <td>usr:{{ servidor['cpu_usr'] }}, sys:{{ servidor['cpu_sys'] }}, wio:{{ servidor['cpu_wio'] }}, idle:{{ servidor['cpu_idle'] }}</td>
-                <td>Total: {{ servidor['ram_total'] }}Kb Usada: {{ servidor['ram_used'] }}</td>
-                <td>Total: {{ servidor['swap_total'] }}Kb Usada: {{ servidor['swap_used'] }}</td>
+                <th>Hostname</th>
+                <th>Version SO</th>
+                <th>Direccion IP</th>
+                <th>Uso de CPU</th>
+                <th>Uso de RAM</th>
+                <th>Uso de SWAP</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="backtop">
-        <a href="#top">Volver arriba</a>
-    </div>
-
-    {% for servidor in servidores %}
- 
-    <h1 class="page-header"><a name="{{ servidor['hostname'] }}" class="localanchor">{{ servidor['shortname'] }}</a></h1>
-
-    <div class="row placeholders">
-        <div class="col-xs-8 col-sm-4 placeholder">
-          <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>CPU</h4>
-          <span class="text-muted">Something else</span>
-        </div>
-        <div class="col-xs-8 col-sm-4 placeholder">
-          <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>RAM</h4>
-          <span class="text-muted">Something else</span>
-        </div>
-        <div class="col-xs-8 col-sm-4 placeholder">
-          <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>SWAP</h4>
-          <span class="text-muted">Something else</span>
-        </div>
-    </div>
-    <div class="backtop">
-        <a href="#top">Volver arriba</a>
-    </div>
-    {% endfor %}
+            </thead>
+            <tbody>
+            {% for servidor in servidores %}
+                <tr>
+                    <td>{{ servidor['hostname'] }}</td>
+                    <td>{{ servidor['verso'] }}</td>
+                    <td>{{ servidor['ip'] }}</td>
+                    <td>usr:{{ servidor['cpu_usr'] }}, sys:{{ servidor['cpu_sys'] }}, wio:{{ servidor['cpu_wio'] }}, idle:{{ servidor['cpu_idle'] }}</td>
+                    <td>Total: {{ servidor['ram_total'] }}Kb Usada: {{ servidor['ram_used'] }}</td>
+                    <td>Total: {{ servidor['swap_total'] }}Kb Usada: {{ servidor['swap_used'] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}
 
 {% endblock %}
 
